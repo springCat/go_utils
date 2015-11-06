@@ -1,8 +1,8 @@
 package converter
+
 import (
 	"testing"
 )
-
 
 func TestToInt64(t *testing.T) {
 	tests := []string{"1000", "-123", "abcdef", "100000000000000000000000000000000000000000000"}
@@ -66,11 +66,11 @@ func TestToBool(t *testing.T) {
 
 func TestToString(t *testing.T) {
 	m := map[interface{}]interface{}{
-		"str123":"str123",
-		123: "123",
-		12.3: "12.3",
-		true: "true",
-		1.5+10i: "(1.5+10i)",
+		"str123":  "str123",
+		123:       "123",
+		12.3:      "12.3",
+		true:      "true",
+		1.5 + 10i: "(1.5+10i)",
 	}
 
 	for k, v := range m {
@@ -83,7 +83,7 @@ func TestToString(t *testing.T) {
 }
 
 func testToJson(t *testing.T, test interface{}, expected string) {
-	res,err := ToJson(test)
+	res, err := ToJson(test)
 	if res != expected || err != nil {
 		t.Log("Case ToString: expected ", expected, " when result is ", res)
 		t.FailNow()
@@ -92,38 +92,37 @@ func testToJson(t *testing.T, test interface{}, expected string) {
 
 func TestToJson(t *testing.T) {
 
-	testToJson(t,map[string]string{"a":"a","b":"b"},"{\"a\":\"a\",\"b\":\"b\"}")
-
+	testToJson(t, map[string]string{"a": "a", "b": "b"}, "{\"a\":\"a\",\"b\":\"b\"}")
 
 	type user struct {
-		Name string `json:"name"`
-		Age  int64	`json:"age"`
+		Name  string  `json:"name"`
+		Age   int64   `json:"age"`
 		Money float64 `json:"money"`
 	}
 
 	u := user{
-		Name:"小明",
-		Age:12,
-		Money:1000.0,
+		Name:  "小明",
+		Age:   12,
+		Money: 1000.0,
 	}
 
 	u1 := user{
-		Name:"小明1",
-		Age:13,
-		Money:1001.0,
+		Name:  "小明1",
+		Age:   13,
+		Money: 1001.0,
 	}
 
-	us := make([]user,0)
-	us = append(us,u)
-	us = append(us,u1)
+	us := make([]user, 0)
+	us = append(us, u)
+	us = append(us, u1)
 
-	testToJson(t,u,"{\"name\":\"小明\",\"age\":12,\"money\":1000}")
-	testToJson(t,us,"[{\"name\":\"小明\",\"age\":12,\"money\":1000},{\"name\":\"小明1\",\"age\":13,\"money\":1001}]")
+	testToJson(t, u, "{\"name\":\"小明\",\"age\":12,\"money\":1000}")
+	testToJson(t, us, "[{\"name\":\"小明\",\"age\":12,\"money\":1000},{\"name\":\"小明1\",\"age\":13,\"money\":1001}]")
 }
 
 func testToXml(t *testing.T, test interface{}, expected string) {
-	res,err := ToXml(test)
-	if res != expected || err != nil{
+	res, err := ToXml(test)
+	if res != expected || err != nil {
 		t.Log("Case ToString: expected ", expected, " when result is ", res)
 		t.FailNow()
 	}
@@ -134,32 +133,28 @@ func TestToXml(t *testing.T) {
 	//	testToXml(t,m,"1")
 
 	type user struct {
-		Name string `xml:"name"`
-		Age  int64	`xml:"age"`
+		Name  string  `xml:"name"`
+		Age   int64   `xml:"age"`
 		Money float64 `xml:"money"`
 	}
 
 	u := user{
-		Name:"小明",
-		Age:12,
-		Money:1000.0,
+		Name:  "小明",
+		Age:   12,
+		Money: 1000.0,
 	}
 
 	u1 := user{
-		Name:"小明1",
-		Age:13,
-		Money:1001.0,
+		Name:  "小明1",
+		Age:   13,
+		Money: 1001.0,
 	}
 
-	us := make([]user,0)
-	us = append(us,u)
-	us = append(us,u1)
+	us := make([]user, 0)
+	us = append(us, u)
+	us = append(us, u1)
 
-	testToXml(t,u,"<user><name>小明</name><age>12</age><money>1000</money></user>")
-	testToXml(t,us,"<user><name>小明</name><age>12</age><money>1000</money></user><user><name>小明1</name><age>13</age><money>1001</money></user>")
+	testToXml(t, u, "<user><name>小明</name><age>12</age><money>1000</money></user>")
+	testToXml(t, us, "<user><name>小明</name><age>12</age><money>1000</money></user><user><name>小明1</name><age>13</age><money>1001</money></user>")
 
 }
-
-
-
-
