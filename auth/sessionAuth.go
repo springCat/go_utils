@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/context"
 	"net/http"
-"fmt"
 	"encoding/gob"
 )
 
@@ -157,17 +156,18 @@ func newSession(engine *gin.Engine, conf AuthConf, store sessions.CookieStore) {
 	engine.GET(conf.LoginFailed.url, conf.LoginFailed.handle)
 	engine.GET(conf.UnAuthenticated.url, conf.UnAuthenticated.handle)
 	engine.GET(conf.IsAuthenticated.url, conf.IsAuthenticated.handle)
+
 }
 
 type User interface {
 	UniqueId() interface{}
 
-	Login() (u User, err LoginError)
+	Login(c *gin.Context) (u User,isRememberMe bool, err LoginError)
 }
 
 func RequireUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if !IsAuthenticated(c) {
+		if !IsAuthenticated(c)  {
 			c.Redirect(http.StatusMovedPermanently, authConf.UnAuthenticated.url)
 			c.Abort()
 			return
@@ -191,15 +191,34 @@ func GetUniqueId(c *gin.Context) interface{} {
 }
 
 func IsAuthenticated(c *gin.Context) bool {
+
+	if IsLogin(c) {
+		return true
+	}
+
+	err := loginByRememberMe(c)
+	if err != nil {
+		return false
+	}
+
+	return IsLogin(c)
+}
+
+func IsLogin(c *gin.Context) bool {
 	session := sessions.Default(c)
 	u := session.Get(authConf.Session.SessionKey)
 	return u != nil
 }
 
-func Logout(c *gin.Context) error {
-	session := sessions.Default(c)
-	session.Clear()
-	return session.Save()
+func Logout(c *gin.Context) bool {
+
+	isRememberMeSuccess := true
+	if isRememberMeEnable() {
+		isRememberMeSuccess = (clearRememberMe(c) == nil)
+	}
+	isSuccess := (destroySession(c) == nil)
+
+	return isSuccess && isRememberMeSuccess
 }
 
 type LoginError int
@@ -212,9 +231,26 @@ const (
 	ERROR_ALREADY_LOGOUT
 )
 
+func destroySession(c *gin.Context) error {
+
+	session := sessions.Default(c)
+	session.Clear()
+	err := session.Save()
+
+	cookie := &http.Cookie{
+		Name: authConf.Session.CookieKey,
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+	http.SetCookie(c.Writer,cookie)
+
+	return err
+}
+
 func login(c *gin.Context) {
 
-	u, err := authConf.LoginUser.Login()
+	u,isRememberMe, err := authConf.LoginUser.Login(c)
 
 	if err != 0 {
 		c.Set("LoginError", err)
@@ -224,9 +260,10 @@ func login(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set(authConf.Session.SessionKey, u)
-	se := session.Save()
-	if se != nil {
-		fmt.Println("se:", se)
+	session.Save()
+
+	if isRememberMeEnable() && isRememberMe {
+		saveRememberMe(c)
 	}
 
 	c.Redirect(http.StatusMovedPermanently, authConf.LoginSuccess.url)
@@ -241,8 +278,8 @@ func DefaultUnAuthenticate(c *gin.Context) {
 }
 
 func DefaultLogout(c *gin.Context) {
-	err := Logout(c)
-	if err != nil {
+	success := Logout(c)
+	if !success {
 		c.JSON(http.StatusBadRequest, "logout fail")
 		return
 	}
