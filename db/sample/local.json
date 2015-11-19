@@ -1,0 +1,6 @@
+{
+  "db_url": "root:260126012601@/anne?charset=utf8",
+  "db_show_sql":true,
+  "db_maxIdleConns":10,
+  "db_maxOpenConns":20
+}
