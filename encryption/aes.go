@@ -1,7 +1,7 @@
 package encryption
 import (
 "crypto/aes"
-"go_utils/RWMutex"
+	"go_utils/synx"
 	"crypto/cipher"
 )
 

@@ -1,4 +1,4 @@
-package syn
+package synx
 import (
 "testing"
 

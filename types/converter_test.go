@@ -1,7 +1,10 @@
-package converter
+package types
 
 import (
 	"testing"
+	"time"
+"fmt"
+	"encoding/json"
 )
 
 func TestToInt64(t *testing.T) {
@@ -68,5 +71,28 @@ func TestToString(t *testing.T) {
 			t.FailNow()
 		}
 	}
-}
 
+	type Hobby struct {
+		Name string
+		Desc string
+		Start time.Time
+	}
+
+	type man struct {
+		Id   int `json:"-"`
+		Name string
+		Sex  string
+		Hobbys []Hobby
+ 	}
+
+
+
+	user := &man{1,"小明","男",[]Hobby{{"画画","huahua",time.Now()},{"doti","dotinow",time.Now()}}}
+
+	fmt.Println("ToString(user):", ToString(user))
+
+
+	b,_ := json.Marshal(user)
+	fmt.Println("ToString(user):", ToString(b))
+
+}
