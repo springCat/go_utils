@@ -11,7 +11,7 @@ func TestToInt64(t *testing.T) {
 	tests := []string{"1000", "-123", "abcdef", "0"}
 	expected := []int64{1000, -123, 0, 0}
 	for i := 0; i < len(tests); i++ {
-		result, _ := StrToInt64(tests[i])
+		result, _ := ToInt64(tests[i])
 		if result != expected[i] {
 			t.Log("Case ", i, ": expected ", expected[i], " when result is ", result)
 			t.FailNow()
@@ -23,7 +23,7 @@ func TestToInt32(t *testing.T) {
 	tests := []string{"1000", "-123", "abcdef", "0"}
 	expected := []int32{1000, -123, 0, 0}
 	for i := 0; i < len(tests); i++ {
-		result, _ := StrToInt32(tests[i])
+		result, _ := ToInt32(tests[i])
 		if result != expected[i] {
 			t.Log("Case ", i, ": expected ", expected[i], " when result is ", result)
 			t.FailNow()
@@ -35,7 +35,7 @@ func TestToFloat64(t *testing.T) {
 	tests := []string{"", "123", "-.01", "10.", "string", "1.23e3", ".23e10"}
 	expected := []float64{0, 123, -0.01, 10.0, 0, 1230, 0.23e10}
 	for i := 0; i < len(tests); i++ {
-		res, _ := StrToFloat64(tests[i])
+		res, _ := ToFloat64(tests[i])
 		if res != expected[i] {
 			t.Log("Case ", i, ": expected ", expected[i], " when result is ", res)
 			t.FailNow()
@@ -47,7 +47,7 @@ func TestToFloat32(t *testing.T) {
 	tests := []string{"", "123", "-.01", "10.", "string", "1.23e3", ".23e10"}
 	expected := []float32{0, 123, -0.01, 10.0, 0, 1230, 0.23e10}
 	for i := 0; i < len(tests); i++ {
-		res, _ := StrToFloat32(tests[i])
+		res, _ := ToFloat32(tests[i])
 		if res != expected[i] {
 			t.Log("Case ", i, ": expected ", expected[i], " when result is ", res)
 			t.FailNow()

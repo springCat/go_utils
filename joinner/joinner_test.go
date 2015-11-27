@@ -1,4 +1,4 @@
-package collections
+package joinner
 import (
 "testing"
 )

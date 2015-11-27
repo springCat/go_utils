@@ -6,10 +6,10 @@ import (
 )
 
 
-var AESKeyMap = aesCipher{syn.NewRWMutexMap()}
+var AESKeyMap = aesCipher{synx.NewRWMutexMap()}
 
 type aesCipher struct {
-	m *syn.RWMutexMap
+	m *synx.RWMutexMap
 }
 
 func (a aesCipher) key(key string) (cipher.Block,error) {

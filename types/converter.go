@@ -6,12 +6,12 @@ import (
 	"strconv"
 )
 
-func StrToInt64(s string) (int64, error) {
+func ToInt64(s string) (int64, error) {
 	i, err := strconv.ParseInt(s, 0, 64)
 	return i, err
 }
 
-func StrToInt32(s string) (int32, error) {
+func ToInt32(s string) (int32, error) {
 	i, err := strconv.ParseInt(s, 0, 32)
 	if err != nil {
 		return 0, err
@@ -19,12 +19,12 @@ func StrToInt32(s string) (int32, error) {
 	return int32(i), err
 }
 
-func StrToFloat64(s string) (float64, error) {
+func ToFloat64(s string) (float64, error) {
 	f, err := strconv.ParseFloat(s, 64)
 	return f, err
 }
 
-func StrToFloat32(s string) (float32, error) {
+func ToFloat32(s string) (float32, error) {
 	f, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return 0, err
@@ -34,7 +34,7 @@ func StrToFloat32(s string) (float32, error) {
 
 func ByteToInt64(b []byte) (int64,error) {
 	s := string(b)
-	return StrToInt64(s)
+	return ToInt64(s)
 }
 
 func Int64ToByte(i int64) ([]byte,error) {
