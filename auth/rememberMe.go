@@ -4,29 +4,30 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	gorillaSession "github.com/gorilla/sessions"
-
-"log"
 	"errors"
+	"log"
 )
+
 const (
-	RMDefaultKey  = "springCatRememberMe"
+	RMDefaultKey = "springCatRememberMe"
 )
+
 type RememberMeConf struct {
 	CookieKey string
-	MaxAge     int
-	Secret     string
+	MaxAge    int
+	Secret    string
 }
 
 var rememberMeConf RememberMeConf
 
 var cookieStore sessions.CookieStore
 
-func NewRememberMe(engine *gin.Engine,cookieKey string,maxAge int,secret string) {
+func NewRememberMe(engine *gin.Engine, cookieKey string, maxAge int, secret string) {
 
 	rememberMeConf = RememberMeConf{
-		CookieKey:cookieKey,
-		MaxAge:maxAge,
-		Secret:secret,
+		CookieKey: cookieKey,
+		MaxAge:    maxAge,
+		Secret:    secret,
 	}
 
 	options := sessions.Options{
@@ -38,7 +39,7 @@ func NewRememberMe(engine *gin.Engine,cookieKey string,maxAge int,secret string)
 	cookieStore.Options(options)
 }
 
-func isRememberMeEnable() bool{
+func isRememberMeEnable() bool {
 	return cookieStore != nil
 }
 
@@ -50,49 +51,49 @@ func getRMSession(c *gin.Context) *gorillaSession.Session {
 	return RMSession
 }
 
-func getRMSessionValue(c *gin.Context,key string) interface{} {
+func getRMSessionValue(c *gin.Context, key string) interface{} {
 	RMSession := getRMSession(c)
 	return RMSession.Values[key]
 }
 
-func setRMSessionValue(c *gin.Context,key string,value interface{}) *gorillaSession.Session {
+func setRMSessionValue(c *gin.Context, key string, value interface{}) *gorillaSession.Session {
 	RMSession := getRMSession(c)
 	RMSession.Values[key] = value
 	return RMSession
 }
 
-func saveRMSession(c *gin.Context,session *gorillaSession.Session) error {
-	return  cookieStore.Save(c.Request,c.Writer,session)
+func saveRMSession(c *gin.Context, session *gorillaSession.Session) error {
+	return cookieStore.Save(c.Request, c.Writer, session)
 }
 
 func destroyRMSession(c *gin.Context) error {
 	RMSession := getRMSession(c)
 	RMSession.Options = &gorillaSession.Options{
-		Path:      "/",
-		MaxAge:    -1,
+		Path:     "/",
+		MaxAge:   -1,
 		HttpOnly: true,
 	}
-	return saveRMSession(c,RMSession)
+	return saveRMSession(c, RMSession)
 }
 
 func saveRememberMe(c *gin.Context) error {
 	session := sessions.Default(c)
 	loginUser := session.Get(authConf.Session.SessionKey)
 
-	RMSession := setRMSessionValue(c,authConf.Session.SessionKey,loginUser)
-	return saveRMSession(c,RMSession)
+	RMSession := setRMSessionValue(c, authConf.Session.SessionKey, loginUser)
+	return saveRMSession(c, RMSession)
 }
 
-func loginByRememberMe(c *gin.Context)  error {
+func loginByRememberMe(c *gin.Context) error {
 
-	loginUser := getRMSessionValue(c,authConf.Session.SessionKey)
+	loginUser := getRMSessionValue(c, authConf.Session.SessionKey)
 
 	if loginUser == nil {
-		return  errors.New("no rememberMe")
+		return errors.New("no rememberMe")
 	}
 
 	session := sessions.Default(c)
-	session.Set(authConf.Session.SessionKey,loginUser)
+	session.Set(authConf.Session.SessionKey, loginUser)
 	return session.Save()
 }
 

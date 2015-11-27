@@ -6,7 +6,7 @@ import (
 //	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/xorm"
-	"go_utils/dbx"
+	"github.com/springCat/go_utils/dbx"
 	"io/ioutil"
 	"log"
 	"net"

@@ -1,11 +1,11 @@
 package auth
 
 import (
+	"encoding/gob"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/context"
 	"net/http"
-	"encoding/gob"
 )
 
 type (
@@ -162,12 +162,12 @@ func newSession(engine *gin.Engine, conf AuthConf, store sessions.CookieStore) {
 type User interface {
 	UniqueId() interface{}
 
-	Login(c *gin.Context) (u User,isRememberMe bool, err LoginError)
+	Login(c *gin.Context) (u User, isRememberMe bool, err LoginError)
 }
 
 func RequireUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if !IsAuthenticated(c)  {
+		if !IsAuthenticated(c) {
 			c.Redirect(http.StatusMovedPermanently, authConf.UnAuthenticated.url)
 			c.Abort()
 			return
@@ -238,19 +238,19 @@ func destroySession(c *gin.Context) error {
 	err := session.Save()
 
 	cookie := &http.Cookie{
-		Name: authConf.Session.CookieKey,
+		Name:     authConf.Session.CookieKey,
 		Path:     "/",
 		MaxAge:   -1,
 		HttpOnly: true,
 	}
-	http.SetCookie(c.Writer,cookie)
+	http.SetCookie(c.Writer, cookie)
 
 	return err
 }
 
 func login(c *gin.Context) {
 
-	u,isRememberMe, err := authConf.LoginUser.Login(c)
+	u, isRememberMe, err := authConf.LoginUser.Login(c)
 
 	if err != 0 {
 		c.Set("LoginError", err)

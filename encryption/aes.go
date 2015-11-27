@@ -1,10 +1,10 @@
 package encryption
-import (
-"crypto/aes"
-	"go_utils/synx"
-	"crypto/cipher"
-)
 
+import (
+	"crypto/aes"
+	"crypto/cipher"
+	"github.com/springCat/go_utils/synx"
+)
 
 var AESKeyMap = aesCipher{synx.NewRWMutexMap()}
 
@@ -12,44 +12,44 @@ type aesCipher struct {
 	m *synx.RWMutexMap
 }
 
-func (a aesCipher) key(key string) (cipher.Block,error) {
-	block,exist := a.m.Get(key)
+func (a aesCipher) key(key string) (cipher.Block, error) {
+	block, exist := a.m.Get(key)
 	if !exist {
 		b, err := aes.NewCipher([]byte(key))
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
-		a.m.Put(key,b)
-		return b,nil
+		a.m.Put(key, b)
+		return b, nil
 	}
-	return block.(cipher.Block),nil
+	return block.(cipher.Block), nil
 }
 
-func AESEncrypt(key string,plaintext []byte) (string, error){
-	block,err := AESKeyMap.key(key)
+func AESEncrypt(key string, plaintext []byte) (string, error) {
+	block, err := AESKeyMap.key(key)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	raw,err := Encrypt(block,plaintext)
+	raw, err := Encrypt(block, plaintext)
 	if err != nil {
-		return "",err
+		return "", err
 	}
 	v := Encode(raw)
-	return string(v),nil
+	return string(v), nil
 }
 
-func AESDecrypt(key string,ciphertext []byte) (string, error) {
-	block,err := AESKeyMap.key(key)
+func AESDecrypt(key string, ciphertext []byte) (string, error) {
+	block, err := AESKeyMap.key(key)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	raw,err := Decode(ciphertext)
+	raw, err := Decode(ciphertext)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	v,err := Decrypt(block,raw)
+	v, err := Decrypt(block, raw)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return string(v),nil
+	return string(v), nil
 }

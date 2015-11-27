@@ -2,7 +2,7 @@ package upload
 
 import (
 	"github.com/gin-gonic/gin"
-	"go_utils/id"
+	"github.com/springCat/go_utils/id"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"

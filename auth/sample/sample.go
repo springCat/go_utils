@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"go_utils/auth"
+	"github.com/springCat/go_utils/auth"
 )
 
 type User struct {

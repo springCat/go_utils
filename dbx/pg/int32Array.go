@@ -2,7 +2,7 @@ package dbx
 
 import (
 	"encoding/json"
-	"go_utils/joinner"
+	"github.com/springCat/go_utils/joinner"
 	"log"
 )
 

@@ -2,7 +2,7 @@ package timex
 
 import (
 	"errors"
-	"go_utils/types"
+	"github.com/springCat/go_utils/types"
 	"time"
 )
 
